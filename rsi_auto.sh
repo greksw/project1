@@ -28,15 +28,16 @@ iptables -A OUTPUT -o lo -j ACCEPT
 # Разрешение установленных соединений
 iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
-# Разрешение SSH (порт 22)
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-
 # Разрешение HTTP (порт 80) и HTTPS (порт 443) для доступа к репозиториям
 iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT
 iptables -A OUTPUT -p tcp --dport 443 -j ACCEPT
+# Разрешение SSH (порт 22)
+sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT 
+# HTTPS для передачи сертификатов
+sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT 
+# Node Exporter (порт 9100 TCP)
+iptables -A INPUT -p tcp --dport 9100 -j ACCEPT
 
-sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT  # SSH
-sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT # HTTPS для передачи сертификатов
 sudo iptables -A INPUT -j DROP  # Блокировать все остальные входящие соединения
 
 # Сохранение правил iptables
@@ -81,4 +82,3 @@ echo "Защита приватных ключей..."
 chmod 600 ~/certs/server.key ~/certs/client.key
 
 echo "Удостоверяющий центр настроен. Сертификаты находятся в ~/certs/"
-
