@@ -48,3 +48,37 @@ echo "Создание директории для PKI..."
 mkdir -p ~/easy-rsa
 ln -s /usr/share/easy-rsa/* ~/easy-rsa/
 cd ~/easy-rsa
+
+# Инициализация PKI
+echo "Инициализация PKI..."
+./easyrsa init-pki
+
+# Создание корневого сертификата
+echo "Создание корневого сертификата..."
+./easyrsa build-ca nopass
+
+# Создание сертификата для VPN-сервера
+echo "Создание сертификата для VPN-сервера..."
+./easyrsa gen-req server nopass
+./easyrsa sign-req server server
+
+# Создание клиентского сертификата
+echo "Создание клиентского сертификата..."
+./easyrsa gen-req client nopass
+./easyrsa sign-req client client
+
+# Копирование сертификатов в нужные директории
+echo "Копирование сертификатов..."
+mkdir -p ~/certs
+cp ~/easy-rsa/pki/ca.crt ~/certs/
+cp ~/easy-rsa/pki/issued/server.crt ~/certs/
+cp ~/easy-rsa/pki/private/server.key ~/certs/
+cp ~/easy-rsa/pki/issued/client.crt ~/certs/
+cp ~/easy-rsa/pki/private/client.key ~/certs/
+
+# Защита приватных ключей
+echo "Защита приватных ключей..."
+chmod 600 ~/certs/server.key ~/certs/client.key
+
+echo "Удостоверяющий центр настроен. Сертификаты находятся в ~/certs/"
+
