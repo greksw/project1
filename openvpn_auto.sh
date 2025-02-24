@@ -40,6 +40,9 @@ iptables -A INPUT -p tcp --dport 9100 -j ACCEPT
 # Блокировка всех остальных входящих соединений
 iptables -A INPUT -j DROP
 
+#Логирование заблокированных пакетов
+iptables -A INPUT -j LOG --log-prefix "Blocked: "
+
 # Сохранение правил iptables
 echo "Сохранение правил iptables..."
 sudo iptables-save | sudo tee /etc/iptables/rules.v4
